@@ -1,150 +1,201 @@
-/* Estructura general */
+/* Estilo base */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: #f4f6f8;
+  color: #333;
+  height: 100%;
+}
+
+/* Layout principal */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .container {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f4f4f9;
+  padding: 2rem;
+  gap: 50px;
 }
 
+/* Encabezado */
 .company-info {
   text-align: center;
-  margin-right: 20px;
+  margin-bottom: 1rem;
 }
 
 .logo {
-  color: #28a745;
-  font-size: 72px;
-  font-weight: bold;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 2.5rem;
+  color: #2e7d32; /* Verde corporativo */
+  font-weight: 800;
+  letter-spacing: 1px;
 }
 
+/* Tarjeta */
 .card {
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 420px;
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   width: 100%;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+  max-width: 420px;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .card-title {
-  font-size: 24px;
-  color: #333;
-  font-weight: bold;
-  margin-bottom: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  color: #1b5e20;
+}
+
+/* Inputs */
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
 .loginInput {
   width: 100%;
-  padding: 14px;
-  margin-bottom: 20px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+  background-color: #fafafa;
 }
 
 .loginInput:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 10px rgba(40, 167, 69, 0.2);
+  border-color: #43a047;
+  outline: none;
+  background-color: #fff;
 }
 
-.input-container {
-  position: relative;
-}
-
-.input-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #28a745;
-}
-
+/* Botón */
 .btn-entrar {
-  background-color: #28a745;
-  color: white;
-  font-weight: bold;
-  padding: 12px;
-  border-radius: 8px;
   width: 100%;
+  background-color: #2e7d32;
+  color: #fff;
+  padding: 0.9rem;
+  font-size: 1rem;
   border: none;
+  border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 .btn-entrar:hover {
-  background-color: #218838;
+  background-color: #1b5e20;
 }
 
+/* Enlaces */
 a {
-  text-decoration: none;
-  color: #28a745;
-  font-size: 14px;
   display: block;
-  margin-top: 10px;
+  margin-top: 1rem;
+  text-align: center;
+  color: #2e7d32;
+  font-size: 0.95rem;
+  text-decoration: none;
 }
 
 a:hover {
   text-decoration: underline;
 }
 
-footer {
-  padding: 20px;
-  background-color: #f4f4f9;
+/* Mensaje de error */
+.error {
+  color: red;
   text-align: center;
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  margin-top: 0.5rem;
 }
 
-footer p {
-  margin: 0;
-  color: #777;
-  font-size: 14px;
+/* Footer elegante y delgado */
+footer {
+  background: #1b5e20;
+  color: #eee;
+  text-align: center;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 footer a {
-  color: #28a745;
+  color: #c8e6c9;
+  margin: 0 0.3rem;
+  font-size: 0.85rem;
 }
 
 footer a:hover {
-  text-decoration: underline;
+  color: #fff;
 }
 
-footer i {
-  font-size: 18px;
-  color: #28a745;
-  margin-right: 10px;
+
+/* Animación ligera */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-footer .social-icons {
-  margin-top: 10px;
-}
-
-.social-icons a {
-  margin: 0 10px;
-}
-
-/* Media Query para dispositivos móviles */
-@media (max-width: 768px) {
+/* Responsive */
+@media (max-width: 600px) {
   .container {
     flex-direction: column;
-  }
-
-  .company-info {
-    margin-bottom: 20px;
+    align-items: center;
+    padding: 1rem;
   }
 
   .card {
-    max-width: 90%;
+    padding: 1.5rem 1rem;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;
+  }
+
+  .company-info {
+    margin-bottom: 1rem;
+  }
+
+  .logo {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .card-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .loginInput {
+    font-size: 0.95rem;
+    padding: 0.65rem;
+  }
+
+  .btn-entrar {
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+
+  a {
+    font-size: 0.85rem;
+    margin-top: 0.8rem;
+  }
+
+  footer {
+    font-size: 0.7rem;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .social-icons a {
+    font-size: 1rem;
+    margin: 0 0.3rem;
   }
 }
