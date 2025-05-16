@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import {environment} from './environments/environment'
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class LoginService {
 
 
   constructor() {
-    this.socket = io('http://localhost:3000');
+    this.socket = io(environment.api);
 
     this.socket.on('login_success', (data) => {
       console.log('✅ Inicio de sesión exitoso:', data);

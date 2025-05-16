@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
+import {environment} from './environments/environment'
 @Injectable({
   providedIn: 'root'
 })
 export class ConsolasService {
 
-  private consolasUrl = 'http://localhost:3000/consola'
-  private consolaImagenUrl = 'http://localhost:3000/consolas_image'
+  private consolasUrl = `${environment.api}/consola`
+  private consolaImagenUrl = `${environment.api}/consolas_image`
 
   constructor(private http: HttpClient) { }
 

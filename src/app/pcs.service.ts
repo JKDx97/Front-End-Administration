@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {environment} from './environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class pcsService {
 
-  private pcsUrl = 'http://localhost:3000/pcs'
-  private pcImagenUrl = 'http://localhost:3000/pc_imagen'
+  private pcsUrl = `${environment.api}/pcs`
+  private pcImagenUrl = `${environment.api}/pc_imagen`
 
   constructor(private http : HttpClient) { }
 

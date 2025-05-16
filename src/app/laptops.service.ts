@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {environment} from './environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class LaptopsService {
 
-  private laptopsUrl = 'http://localhost:3000/laptop'
-  private laptopsImageUrl = 'http://localhost:3000/laptops_image'
+  private laptopsUrl = `${environment.api}/laptop`
+  private laptopsImageUrl = `${environment.api}/laptops_image`
 
   constructor(private http : HttpClient) { }
 
