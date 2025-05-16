@@ -1,0 +1,289 @@
+<div class="main-container">
+    <div class="container mt-4 consola-content">
+        <div class="filter-container mb-3 d-flex justify-content-between">
+            <input type="text" class="form-control search-input" placeholder="Buscar por nombre..."
+                [(ngModel)]="searchTerm" (input)="filterConsolas()">
+            <div class="d-flex align-items-center">
+                <label class="me-2">Filtrar por marca:</label>
+                <div class="form-check form-check-inline" *ngFor="let marca of marcas">
+                    <input class="form-check-input" type="checkbox" [value]="marca"
+                        (change)="onMarcaToggle(marca, $event)" [checked]="selectedMarcas.includes(marca)">
+                    <label class="form-check-label">{{ marca }}</label>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-hover table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Marca</th>
+                    <th>Almacenamiento</th>
+                    <th>Modelo</th>
+                    <th>Color</th>
+                    <th>Precio
+                        <button class="btn btn-link p-0 ms-1" (click)="sortByPrecio()">
+                            <span *ngIf="sortAscending">↑</span>
+                            <span *ngIf="!sortAscending">↓</span>
+                        </button>
+                    </th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let consola of paginatedConsolas">
+                    <td>{{ consola.nombre }}</td>
+                    <td>{{ consola.marca }}</td>
+                    <td>{{ consola.capacidad_almacenamiento }}</td>
+                    <td>{{ consola.modelo }}</td>
+                    <td>{{ consola.color }}</td>
+                    <td>S/ {{ consola.precio }}</td>
+                    <td>
+                        <input class="form-check-input" type="checkbox" [checked]="consola.estado === 1"
+                            (change)="OnConsolaToogle($event, consola)">
+                    </td>
+                    <td>
+                        <button class="btn btn-success btn-sm" (click)="openModal(consola)">
+                            <i class="bi bi-eye"></i> Ver detalles
+                        </button>
+                        <button class="btn btn-warning btn-sm" (click)="openModalEdit(consola)">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="deleteLaptop(consola.id)">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Botón para agregar nueva consola -->
+        <div class="add-consola-container">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#consolaModal">
+                <i class="bi bi-plus-circle"></i> Agregar nueva consola
+            </button>
+            <a class="btn btn-success" [routerLink]="['/stock_consolas']" routerLinkActive="router-link-active">
+                <i class="bi bi-plus-circle"></i> Stock
+            </a>
+        </div>
+
+
+        <!-- Paginación -->
+        <nav *ngIf="totalPages() > 1">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" [class.disabled]="page === 1">
+                    <button class="page-link" (click)="changePage(page - 1)">Anterior</button>
+                </li>
+                <li class="page-item" *ngFor="let p of [].constructor(totalPages()); let i = index"
+                    [class.active]="page === i + 1">
+                    <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+                </li>
+                <li class="page-item" [class.disabled]="page === totalPages()">
+                    <button class="page-link" (click)="changePage(page + 1)">Siguiente</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="consolaModal" tabindex="-1" aria-labelledby="consolaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #00911f;">
+                <h1 class="modal-title fs-5" style="color: white;" id="consolaModalLabel">Agregar Consola</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="createConsola()">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newConsola.marca" name="marca"
+                                    placeholder="Marca" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newConsola.nombre" name="nombre"
+                                    placeholder="Nombre" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" class="form-control" [(ngModel)]="newConsola.precio" name="precio"
+                                    placeholder="Precio" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" class="form-control" [(ngModel)]="newConsola.anio_lanzamiento"
+                                    name="anio_lanzamiento" placeholder="Año de Lanzamiento" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newConsola.modelo" name="modelo"
+                                    placeholder="Modelo">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <input type="number" class="form-control" [(ngModel)]="newConsola.cantidad_puertos_usb"
+                                    name="cantidad_puertos_usb" placeholder="Cantidad de Puertos USB">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control"
+                                    [(ngModel)]="newConsola.capacidad_almacenamiento" name="capacidad_almacenamiento"
+                                    placeholder="Capacidad de Almacenamiento">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newConsola.color" name="color"
+                                    placeholder="Color">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newConsola.conectividad"
+                                    name="conectividad" placeholder="Conectividad">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newConsola.tipo_consola"
+                                    name="tipo_consola" placeholder="Tipo de Consola">
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" class="form-control" [(ngModel)]="newConsola.cantidad_controles"
+                                    name="cantidad_controles" placeholder="Cantidad de Controles">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newConsola.memoria_ram"
+                                    name="memoria_ram" placeholder="Memoria RAM">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Crear Consola</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="consolaDetallesModal" tabindex="-1" aria-labelledby="laptopModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #00911f;">
+                <h5 class="modal-title text-white" id="laptopModalLabel">
+                    {{ selectedConsola?.nombre }} - {{ selectedConsola?.marca }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Especificaciones de la laptop -->
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6"><strong>Lanzamiento:</strong> {{ selectedConsola?.anio_lanzamiento }}
+                            </div>
+                            <div class="col-md-6"><strong>Modelo:</strong> {{ selectedConsola?.modelo }}</div>
+                            <div class="col-md-6"><strong>RAM:</strong> {{ selectedConsola?.memoria_ram }}</div>
+                            <div class="col-md-6"><strong>Color:</strong> {{ selectedConsola?.color }}</div>
+                            <div class="col-md-6"><strong>Cantidad de puertos:</strong> {{
+                                selectedConsola?.cantidad_puertos_usb }}</div>
+                            <div class="col-md-6"><strong>Conectividad:</strong> {{ selectedConsola?.conectividad }}
+                            </div>
+                            <div class="col-md-6"><strong>Almacenamiento:</strong> {{
+                                selectedConsola?.capacidad_almacenamiento }}</div>
+                            <div class="col-md-6"><strong>Tipo de consola:</strong> {{ selectedConsola?.tipo_consola }}
+                            </div>
+                            <div class="col-md-6"><strong>Controles:</strong> {{ selectedConsola?.cantidad_controles }}
+                            </div>
+                            <div class="col-md-6"><strong>Precio:</strong> {{ selectedConsola?.precio | currency }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div *ngIf="selectedConsola?.images?.length > 0">
+                            <img [src]="selectedConsola?.images[0]?.consola_image_principal"
+                                alt="Imagen de {{ selectedConsola?.modelo }}" class="img-fluid rounded">
+                        </div>
+                        <div *ngIf="!selectedConsola?.images?.length">
+                            <p>No hay imagen disponible</p>
+                        </div>
+                    </div>
+
+                    <!-- Subir imagen SOLO si no hay imagen disponible -->
+                    <div class="col-md-4 text-center" *ngIf="!selectedConsola?.images?.length">
+                        <h5>Subir Imagen Principal</h5>
+                        <div class="image-preview mb-2">
+                            <img *ngIf="imagePreview" [src]="imagePreview" alt="Previsualización"
+                                class="img-fluid rounded" />
+                        </div>
+                        <input type="file" (change)="selectFile($event)" class="form-control mb-2" />
+                        <button class="btn btn-primary w-100" (click)="uploadImage(selectedConsola?.id_consola)">
+                            Subir Imagen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editConsolaModal" tabindex="-1" aria-labelledby="editConsolaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #00911f;">
+                <h5 class="modal-title" style="color: white;" id="editConsolaModalLabel">Editar Consola</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="updateConsola()">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Marca</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedConsola.marca" name="marca">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedConsola.nombre" name="nombre">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Modelo</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedConsola.modelo" name="modelo">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Precio</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedConsola.precio"
+                                name="precio">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Año de Lanzamiento</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedConsola.anio_lanzamiento"
+                                name="anio_lanzamiento">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Capacidad de Almacenamiento</label>
+                            <input type="text" class="form-control"
+                                [(ngModel)]="selectedConsola.capacidad_almacenamiento" name="capacidad_almacenamiento">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Color</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedConsola.color" name="color">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Conectividad</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedConsola.conectividad"
+                                name="conectividad">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

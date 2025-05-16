@@ -1,0 +1,322 @@
+<div class="main-container">
+    <div class="container mt-4 laptops-content">
+        <!-- Filtros -->
+        <div class="filter-container mb-3">
+            <input type="text" class="form-control search-input" placeholder="Buscar por nombre..."
+                [(ngModel)]="searchTerm" (input)="filterLaptops()">
+            <div class="d-flex align-items-center">
+                <label class="me-2">Filtrar por marca:</label>
+                <div class="form-check form-check-inline" *ngFor="let marca of marcas">
+                    <input class="form-check-input" type="checkbox" [value]="marca" 
+                        (change)="onMarcaToggle(marca, $event)" [checked]="selectedMarcas.includes(marca)">
+                    <label class="form-check-label">{{ marca }}</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Modelo - Marca</th>
+                    <th>Procesador</th>
+                    <th>RAM</th>
+                    <th>Almacenamiento</th>
+                    <th>Precio
+                        <button class="btn btn-link p-0 ms-1" (click)="sortByPrecio()">
+                            <span *ngIf="sortAscending">↑</span>
+                            <span *ngIf="!sortAscending">↓</span>
+                        </button>
+                    </th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let laptop of paginatedLaptops">
+                    <td>{{ laptop.modelo }} - {{ laptop.marca }}</td>
+                    <td>{{ laptop.procesador }}</td>
+                    <td>{{ laptop.ram }} GB</td>
+                    <td>{{ laptop.almacenamiento }} GB {{ laptop.tipo_disco }}</td>
+                    <td>S/{{ laptop.precio }}</td>
+                    <td>
+                        <input class="form-check-input" type="checkbox" [checked]="laptop.estado === 1"
+                            (change)="onLaptopToggle($event, laptop)">
+                    </td>
+                    <td>
+                        <button class="btn btn-success" (click)="openModal(laptop)">Ver detalles</button>
+                        <button class="btn btn-warning" (click)="openModalEdit(laptop)">Editar</button>
+                        <button class="btn btn-danger" (click)="deleteLaptop(laptop.id)">Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="add-consola-container">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <i class="bi bi-plus-circle"></i> Agregar nueva laptop
+            </button>
+            <a class="btn btn-success" [routerLink]="['/stock_laptops']" routerLinkActive="router-link-active">
+                <i class="bi bi-plus-circle"></i> Stock
+            </a>
+        </div>
+
+
+        <!-- Paginación -->
+        <nav *ngIf="totalPages() > 1">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" [class.disabled]="page === 1">
+                    <button class="page-link" (click)="changePage(page - 1)">Anterior</button>
+                </li>
+                <li 
+                    class="page-item" 
+                    *ngFor="let p of [].constructor(totalPages()); let i = index"
+                    [class.active]="page === i + 1">
+                    <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+                </li>
+                <li class="page-item" [class.disabled]="page === totalPages()">
+                    <button class="page-link" (click)="changePage(page + 1)">Siguiente</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Agregamos modal-dialog-centered -->
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #00911f;">
+                <h1 class="modal-title fs-5" style="color: white;" id="exampleModalLabel">Agregar Laptop</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="createLaptop()">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.modelo" name="modelo"
+                                    placeholder="Modelo" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" class="form-control" [(ngModel)]="newLaptop.precio" name="precio"
+                                    placeholder="Precio" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.procesador"
+                                    name="procesador" placeholder="Procesador">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.pantalla" name="pantalla"
+                                    placeholder="Pantalla">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.marca" name="marca"
+                                    placeholder="Marca">
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" class="form-control" [(ngModel)]="newLaptop.ram" name="ram"
+                                    placeholder="RAM (GB)">
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" class="form-control" [(ngModel)]="newLaptop.almacenamiento"
+                                    name="almacenamiento" placeholder="Almacenamiento (GB)">
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-control" [(ngModel)]="newLaptop.tipo_disco" name="tipo_disco">
+                                    <option disabled value="">Tipo de disco</option>
+                                    <option value="HDD">HDD</option>
+                                    <option value="SSD">SSD</option>
+                                    <option value="NVMe">NVMe</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.resolucion"
+                                    name="resolucion" placeholder="Resolución">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.gpu" name="gpu"
+                                    placeholder="GPU">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.bateria" name="bateria"
+                                    placeholder="Batería">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.puertos" name="puertos"
+                                    placeholder="Puertos">
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" [(ngModel)]="newLaptop.sistema_operativo"
+                                    name="sistema_operativo" placeholder="Sistema Operativo">
+                            </div>
+                            <div class="mb-3">
+                                <input type="date" class="form-control" [(ngModel)]="newLaptop.fecha_lanzamiento"
+                                    name="fecha_lanzamiento">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Crear Laptop</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="laptopModal" tabindex="-1" aria-labelledby="laptopModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #00911f;">
+                <h5 class="modal-title text-white" id="laptopModalLabel">
+                    {{ selectedLaptop?.modelo }} - {{ selectedLaptop?.marca }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Especificaciones de la laptop -->
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6"><strong>Procesador:</strong> {{ selectedLaptop?.procesador }}</div>
+                            <div class="col-md-6"><strong>Pantalla:</strong> {{ selectedLaptop?.pantalla }}</div>
+                            <div class="col-md-6"><strong>RAM:</strong> {{ selectedLaptop?.ram }} GB</div>
+                            <div class="col-md-6"><strong>Tipo Disco:</strong> {{ selectedLaptop?.tipo_disco }}</div>
+                            <div class="col-md-6"><strong>Almacenamiento:</strong> {{ selectedLaptop?.almacenamiento }}
+                                GB</div>
+                            <div class="col-md-6"><strong>Resolución:</strong> {{ selectedLaptop?.resolucion }}</div>
+                            <div class="col-md-6"><strong>GPU:</strong> {{ selectedLaptop?.gpu }}</div>
+                            <div class="col-md-6"><strong>Batería:</strong> {{ selectedLaptop?.bateria }} horas</div>
+                            <div class="col-md-6"><strong>Puertos:</strong> {{ selectedLaptop?.puertos }}</div>
+                            <div class="col-md-6"><strong>Sistema Operativo:</strong> {{
+                                selectedLaptop?.sistema_operativo }}</div>
+                            <div class="col-md-6"><strong>Fecha de Lanzamiento:</strong> {{
+                                selectedLaptop?.fecha_lanzamiento }}</div>
+                            <div class="col-md-6"><strong>Precio:</strong> {{ selectedLaptop?.precio | currency }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div *ngIf="selectedLaptop?.images?.length > 0">
+                            <img [src]="selectedLaptop?.images[0]?.laptop_image_principal"
+                                alt="Imagen de {{ selectedLaptop?.modelo }}" class="img-fluid rounded">
+                        </div>
+                        <div *ngIf="!selectedLaptop?.images?.length">
+                            <p>No hay imagen disponible</p>
+                        </div>
+                    </div>
+
+                    <!-- Subir imagen SOLO si no hay imagen disponible -->
+                    <div class="col-md-4 text-center" *ngIf="!selectedLaptop?.images?.length">
+                        <h5>Subir Imagen Principal</h5>
+                        <div class="image-preview mb-2">
+                            <img *ngIf="imagePreview" [src]="imagePreview" alt="Previsualización"
+                                class="img-fluid rounded" />
+                        </div>
+                        <input type="file" (change)="selectFile($event)" class="form-control mb-2" />
+                        <button class="btn btn-primary w-100" (click)="uploadImage(selectedLaptop?.id)">
+                            Subir Imagen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="editLaptopModal" tabindex="-1" aria-labelledby="editLaptopModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #00911f;">
+                <h5 class="modal-title" style="color: white;" id="editLaptopModalLabel">Editar Laptop</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="updateLaptop()">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Modelo</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.modelo" name="modelo">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Precio</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedLaptop.precio" name="precio">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Procesador</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.procesador"
+                                name="procesador">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Pantalla</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.pantalla"
+                                name="pantalla">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Marca</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.marca" name="marca">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">RAM</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedLaptop.ram" name="ram">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Almacenamiento</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedLaptop.almacenamiento"
+                                name="almacenamiento">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tipo de Disco</label>
+                            <select class="form-control" [(ngModel)]="selectedLaptop.tipo_disco" name="tipo_disco">
+                                <option value="HDD">HDD</option>
+                                <option value="SSD">SSD</option>
+                                <option value="NVMe">NVMe</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Resolución</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.resolucion"
+                                name="resolucion">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">GPU</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.gpu" name="gpu">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Batería</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.bateria" name="bateria">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Puertos</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.puertos" name="puertos">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Sistema Operativo</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedLaptop.sistema_operativo"
+                                name="sistema_operativo">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Fecha de Lanzamiento</label>
+                            <input type="date" class="form-control" [(ngModel)]="selectedLaptop.fecha_lanzamiento"
+                                name="fecha_lanzamiento">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

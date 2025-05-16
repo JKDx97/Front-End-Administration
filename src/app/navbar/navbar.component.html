@@ -1,0 +1,64 @@
+<nav class="navbar navbar-expand-lg bg-custom fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">IBGROUP</a>
+    <button class="navbar-toggler" type="button" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div #navbarNav class="navbar-collapse collapse" [ngClass]="{'show': isNavbarOpen}">
+      <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/pedidos']" routerLinkActive="router-link-active" (click)="closeNavbar()">
+            Pedidos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/proveedores']" routerLinkActive="router-link-active" (click)="closeNavbar()">
+            Proveedores
+          </a>
+        </li>
+        <!-- Consolas Link -->
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/consolas']" routerLinkActive="router-link-active" (click)="closeNavbar()">
+            Consolas
+          </a>
+        </li>
+        <!-- Laptops Link -->
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/laptops']" routerLinkActive="router-link-active" (click)="closeNavbar()">
+            Laptops
+          </a>
+        </li>
+        <!-- PCs Link -->
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/pcs']" routerLinkActive="router-link-active" (click)="closeNavbar()">
+            PCs
+          </a>
+        </li>
+        <!-- Message Icon -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" (click)="closeNavbar()">
+            <i class="fa-solid fa-message"></i>
+          </a>
+        </li>
+        <!-- User Profile Icon -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" (click)="closeNavbar()">
+            <i class="fa-solid fa-circle-user"></i>
+          </a>
+        </li>
+        <!-- Settings Icon -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" (click)="closeNavbar()">
+            <i class="fa-solid fa-gear"></i>
+          </a>
+        </li>
+        <!-- Logout Button -->
+        <li class="nav-item">
+          <button (click)="logout()" class="btn btn-link text-white p-0">
+            <i class="fa-solid fa-sign-out"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,57 @@
+.ventas-main {
+  display: flex;
+  margin-top: 40px;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.ventas-container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.ventas-table-wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.table th,
+.table td {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Oculta columnas menos importantes en pantallas pequeñas */
+.hide-sm {
+  display: table-cell;
+}
+
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    font-size: 0.75rem;
+  }
+
+  .hide-sm {
+    display: none;
+  }
+
+  .ventas-main {
+    padding: 20px 10px;
+  }
+}

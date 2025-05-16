@@ -1,0 +1,182 @@
+<div class="main-container">
+    <div class="container mt-4 proveedor-content">
+        <div class="filter-container mb-3 d-flex justify-content-between flex-wrap">
+            <input type="text" class="form-control search-input" placeholder="Buscar por nombre..."
+                [(ngModel)]="searchTerm" (input)="filterProveedor()">
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Ruc</th>
+                        <th>Telefono</th>
+                        <th>Email</th>
+                        <th>Direccion</th>
+                        <th>Contacto</th>
+                        <th>Fecha de Registro</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let proveedor of paginatedProveeodr">
+                        <td data-label="Nombre">{{ proveedor.nombre }}</td>
+                        <td data-label="RUC">{{ proveedor.ruc }}</td>
+                        <td data-label="Teléfono">{{ proveedor.telefono }}</td>
+                        <td data-label="Email">{{ proveedor.email }}</td>
+                        <td data-label="Dirección">{{ proveedor.direccion }}</td>
+                        <td data-label="Contacto">{{ proveedor.contacto }}</td>
+                        <td data-label="Fecha de Registro">{{ proveedor.fecha_registro | date:'dd/MM/yyyy' }}</td>
+                        <td data-label="Estado">
+                            <input class="form-check-input" type="checkbox" [checked]="proveedor.estado === 1"
+                                (change)="OnProveedorToggle($event, proveedor)">
+                        </td>
+                        <td data-label="Acciones">
+                            <div class="acciones">
+                                <button class="btn btn-warning" (click)="openModalEdit(proveedor)">Editar</button>
+                                <button class="btn btn-danger" (click)="deleteProveedor(proveedor.id)">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div class="add-proveedor-container">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#proveedorModal">
+                    <i class="bi bi-plus-circle"></i> Agregar nuevo proveedor
+                </button>
+            </div>
+
+            <nav *ngIf="totalPages() > 1">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="page === 1">
+                        <button class="page-link" (click)="changePage(page - 1)">Anterior</button>
+                    </li>
+                    <li class="page-item" *ngFor="let p of [].constructor(totalPages()); let i = index"
+                        [class.active]="page === i + 1">
+                        <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+                    </li>
+                    <li class="page-item" [class.disabled]="page === totalPages()">
+                        <button class="page-link" (click)="changePage(page + 1)">Siguiente</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="proveedorModal" tabindex="-1" aria-labelledby="proveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="proveedorModalLabel">Registrar Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <form (ngSubmit)="createProveedor()">
+
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" id="nombre" class="form-control" [(ngModel)]="newProvedor.nombre"
+                            name="nombre">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ruc" class="form-label">RUC</label>
+                        <input type="text" id="ruc" class="form-control" [(ngModel)]="newProvedor.ruc" name="ruc">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" id="telefono" class="form-control" [(ngModel)]="newProvedor.telefono"
+                            name="telefono">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" class="form-control" [(ngModel)]="newProvedor.email"
+                            name="email">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" id="direccion" class="form-control" [(ngModel)]="newProvedor.direccion"
+                            name="direccion">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contacto" class="form-label">Contacto</label>
+                        <input type="text" id="contacto" class="form-control" [(ngModel)]="newProvedor.contacto"
+                            name="contacto">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="proveedorEditModal" tabindex="-1" aria-labelledby="proveedorEditModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="proveedorEditModalLabel">Editar Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <form (ngSubmit)="updateProveedor()">
+                    <div class="mb-3">
+                        <label for="editNombre" class="form-label">Nombre</label>
+                        <input type="text" id="editNombre" class="form-control" [(ngModel)]="selectedProveedor.nombre"
+                            name="editNombre">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editRuc" class="form-label">RUC</label>
+                        <input type="text" id="editRuc" class="form-control" [(ngModel)]="selectedProveedor.ruc"
+                            name="editRuc">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editTelefono" class="form-label">Teléfono</label>
+                        <input type="text" id="editTelefono" class="form-control"
+                            [(ngModel)]="selectedProveedor.telefono" name="editTelefono">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">Email</label>
+                        <input type="email" id="editEmail" class="form-control" [(ngModel)]="selectedProveedor.email"
+                            name="editEmail">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editDireccion" class="form-label">Dirección</label>
+                        <input type="text" id="editDireccion" class="form-control"
+                            [(ngModel)]="selectedProveedor.direccion" name="editDireccion">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editContacto" class="form-label">Contacto</label>
+                        <input type="text" id="editContacto" class="form-control"
+                            [(ngModel)]="selectedProveedor.contacto" name="editContacto">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

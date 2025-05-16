@@ -1,0 +1,99 @@
+.consola-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.table td {
+    font-size: 0.95rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.search-input {
+    width: 300px;
+    margin-right: 10px;
+    
+}
+
+.btn {
+    font-size: 0.85rem;
+    margin: 0 5px;
+}
+
+.add-consola-container {
+    margin: 20px 0;
+    width: 100%;
+    max-width: 1200px;
+    text-align: right;
+}
+
+.pagination .page-link {
+    background-color: #f8f9fa;
+    border-color: #ddd;
+    color: #007bff;
+}
+
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.pagination .active .page-link {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+@media (max-width: 1200px) {
+    .table th, .table td {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .consola-content {
+        padding: 20px 10px;
+    }
+
+    .table th, .table td {
+        font-size: 0.75rem;
+    }
+
+    .add-consola-container {
+        text-align: center;
+    }
+}
+.text-success {
+  color: green;
+}
+.text-warning {
+  color: orange;
+}
+.text-danger {
+  color: red;
+}
+.text-secondary {
+  color: gray;
+}

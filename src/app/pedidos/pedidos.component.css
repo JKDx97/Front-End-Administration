@@ -1,0 +1,136 @@
+.pcs-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.table td {
+    font-size: 0.95rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.search-input {
+    width: 300px;
+    margin-right: 10px;
+}
+
+.btn {
+    font-size: 0.85rem;
+    margin: 0 5px;
+}
+
+.precio{
+    display: flex;
+}
+
+.acciones{
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-pc-container {
+    margin: 20px 0;
+    width: 100%;
+    max-width: 1200px;
+    text-align: right;
+}
+
+.pagination .page-link {
+    background-color: #f8f9fa;
+    border-color: #ddd;
+    color: #007bff;
+}
+
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.pagination .active .page-link {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+@media (max-width: 1200px) {
+    .table th, .table td {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table, .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tr {
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 15px;
+        background-color: #fefefe;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .table td {
+        text-align: left;
+        padding: 12px 20px 12px 140px; /* más espacio a la izquierda */
+        position: relative;
+        font-size: 1rem;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 20px;
+        top: 12px;
+        font-weight: 600;
+        color: #555;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    .table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .acciones {
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 120px;
+    }
+}

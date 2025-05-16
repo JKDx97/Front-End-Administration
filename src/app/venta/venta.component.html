@@ -1,0 +1,58 @@
+<div class="ventas-main">
+  <div class="ventas-container">
+    <div class="ventas-table-wrapper">
+      <table class="table table-hover table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DNI</th>
+            <th>Departamento</th>
+            <th>Región</th>
+            <th>Distrito</th>
+            <th>Dirección</th>
+            <th class="hide-sm">Correo</th>
+            <th class="hide-sm">Teléfono</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="venta">
+            <td>{{ venta.nombre }}</td>
+            <td>{{ venta.apellido }}</td>
+            <td>{{ venta.dni }}</td>
+            <td>{{ venta.departamento }}</td>
+            <td>{{ venta.region }}</td>
+            <td>{{ venta.distrito }}</td>
+            <td>{{ venta.direccion }}</td>
+            <td class="hide-sm">{{ venta.correo }}</td>
+            <td class="hide-sm">{{ venta.telefono }}</td>
+            <td>{{ venta.fecha | date: 'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of detalle">
+            <td>{{ d.producto }}</td>
+            <td>{{ d.cantidad }}</td>
+            <td>S/ {{ d.precio_unitario }}</td>
+            <td>S/ {{ d.subtotal }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <div *ngIf="venta">
+        <h1>Total: S/{{venta.total}}</h1>
+      </div>
+    </div>
+  </div>
+</div>
